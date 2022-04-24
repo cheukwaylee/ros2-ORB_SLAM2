@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
 project(ros2_orbslam)
 
+# 在find_package前面
+#set(cv_bridge_DIR /usr/local/share/cv_bridge_opencv3.4.17/share/cv_bridge/cmake) 
+set(cv_bridge_DIR /usr/local/share/cv_bridge/cmake)  #在find_package前面
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/")
 
 # Default to C++14

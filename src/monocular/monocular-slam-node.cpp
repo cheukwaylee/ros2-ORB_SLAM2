@@ -9,7 +9,9 @@ MonocularSlamNode::MonocularSlamNode(ORB_SLAM2::System* pSLAM)
     m_SLAM(pSLAM)
 {
     m_image_subscriber = this->create_subscription<ImageMsg>(
-        "camera",
+        // "camera",
+        "image", // build-in camera
+        // "camera/color/image_raw",// d435i
         10,
         std::bind(&MonocularSlamNode::GrabImage, this, std::placeholders::_1));
 }
