@@ -1,21 +1,19 @@
 #include "rgbd-slam-node.hpp"
 
-#include<opencv2/core/core.hpp>
+#include <opencv2/core/core.hpp>
 
 using std::placeholders::_1;
 
-RgbdSlamNode::RgbdSlamNode(ORB_SLAM2::System* pSLAM)
-:   Node("orbslam"),
-    m_SLAM(pSLAM)
+RgbdSlamNode::RgbdSlamNode(ORB_SLAM2::System *pSLAM)
+    : Node("orbslam"),
+      m_SLAM(pSLAM)
 {
-    // rgb_sub = std::make_shared<message_filters::Subscriber<ImageMsg> >(shared_ptr<rclcpp::Node>(this), "camera/rgb");
-    // depth_sub = std::make_shared<message_filters::Subscriber<ImageMsg> >(shared_ptr<rclcpp::Node>(this), "camera/depth");
-    rgb_sub = std::make_shared<message_filters::Subscriber<ImageMsg> >(shared_ptr<rclcpp::Node>(this), "camera/color/image_raw");
-    depth_sub = std::make_shared<message_filters::Subscriber<ImageMsg> >(shared_ptr<rclcpp::Node>(this), "camera/depth/image_rect_raw");
-    
-    syncApproximate = std::make_shared<message_filters::Synchronizer<approximate_sync_policy> >(approximate_sync_policy(10), *rgb_sub, *depth_sub);
-    syncApproximate->registerCallback(&RgbdSlamNode::GrabRGBD, this);
+    // rgb_sub = std::make_shared<message_filters::Subscriber<ImageMsg> >(shared_ptr<rclcpp::Node>(this), "camera/color/image_raw");
+    rgb_sub = std::make_shared<message_filters::Subscriber<ImageMsg>>(shared_ptr<rclcpp::Node>(this), "/IR1_img_post");
+    depth_sub = std::make_shared<message_filters::Subscriber<ImageMsg>>(shared_ptr<rclcpp::Node>(this), "/camera/depth/image_rect_raw");
 
+    syncApproximate = std::make_shared<message_filters::Synchronizer<approximate_sync_policy>>(approximate_sync_policy(10), *rgb_sub, *depth_sub);
+    syncApproximate->registerCallback(&RgbdSlamNode::GrabRGBD, this);
 }
 
 RgbdSlamNode::~RgbdSlamNode()
@@ -34,7 +32,7 @@ void RgbdSlamNode::GrabRGBD(const ImageMsg::SharedPtr msgRGB, const ImageMsg::Sh
     {
         cv_ptrRGB = cv_bridge::toCvShare(msgRGB);
     }
-    catch (cv_bridge::Exception& e)
+    catch (cv_bridge::Exception &e)
     {
         RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
         return;
@@ -45,11 +43,11 @@ void RgbdSlamNode::GrabRGBD(const ImageMsg::SharedPtr msgRGB, const ImageMsg::Sh
     {
         cv_ptrD = cv_bridge::toCvShare(msgD);
     }
-    catch (cv_bridge::Exception& e)
+    catch (cv_bridge::Exception &e)
     {
         RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
         return;
     }
-    
+
     cv::Mat Tcw = m_SLAM->TrackRGBD(cv_ptrRGB->image, cv_ptrD->image, msgRGB->header.stamp.sec);
 }

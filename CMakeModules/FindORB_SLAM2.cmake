@@ -28,11 +28,11 @@ find_path(ORB_SLAM2_INCLUDE_DIR System.h
 find_library(ORB_SLAM2_LIBRARY NAMES ORB_SLAM2 libORB_SLAM2
              PATHS ${_ORB_SLAM2_SEARCHES} PATH_SUFFIXES lib)
 
-# Find built-in DBoW2
-find_path(DBoW2_INCLUDE_DIR Thirdparty/DBoW2/DBoW2/BowVector.h
-          PATHS ${_ORB_SLAM2_SEARCHES} PATH_SUFFIXES include)
-find_library(DBoW2_LIBRARY NAMES DBoW2 
-             PATHS ${_ORB_SLAM2_SEARCHES} PATH_SUFFIXES lib Thirdparty/DBoW2/lib)
+# # Find built-in DBoW2
+# find_path(DBoW2_INCLUDE_DIR Thirdparty/DBoW2/DBoW2/BowVector.h
+#           PATHS ${_ORB_SLAM2_SEARCHES} PATH_SUFFIXES include)
+# find_library(DBoW2_LIBRARY NAMES DBoW2 
+#              PATHS ${_ORB_SLAM2_SEARCHES} PATH_SUFFIXES lib Thirdparty/DBoW2/lib)
 
 # Find built-in g2o
 find_library(g2o_LIBRARY NAMES g2o 
@@ -42,9 +42,19 @@ include(FindPackageHandleStandardArgs)
 # handle the QUIETLY and REQUIRED arguments and set ORB_SLAM2_FOUND to TRUE
 # if all listed variables are TRUE
 find_package_handle_standard_args(ORB_SLAM2  DEFAULT_MSG
-                                  ORB_SLAM2_LIBRARY ORB_SLAM2_INCLUDE_DIR DBoW2_INCLUDE_DIR DBoW2_LIBRARY g2o_LIBRARY)
+                                  ORB_SLAM2_LIBRARY ORB_SLAM2_INCLUDE_DIR 
+                                #   DBoW2_INCLUDE_DIR DBoW2_LIBRARY 
+                                  g2o_LIBRARY)
 
 mark_as_advanced(ORB_SLAM2_INCLUDE_DIR ORB_SLAM2_LIBRARY )
 
-set(ORB_SLAM2_LIBRARIES ${ORB_SLAM2_LIBRARY} ${DBoW2_LIBRARY} ${g2o_LIBRARY})
-set(ORB_SLAM2_INCLUDE_DIRS ${ORB_SLAM2_INCLUDE_DIR} ${DBoW2_INCLUDE_DIR})
+set(ORB_SLAM2_LIBRARIES 
+${ORB_SLAM2_LIBRARY} 
+# ${DBoW2_LIBRARY} 
+${g2o_LIBRARY}
+)
+
+set(ORB_SLAM2_INCLUDE_DIRS 
+${ORB_SLAM2_INCLUDE_DIR} 
+# ${DBoW2_INCLUDE_DIR}
+)

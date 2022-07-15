@@ -1,38 +1,28 @@
-#include<iostream>
-#include<algorithm>
-#include<fstream>
-#include<chrono>
+#include <iostream>
+#include <algorithm>
+#include <fstream>
+#include <chrono>
 
 #include "rclcpp/rclcpp.hpp"
-#include "rgbd-slam-node.hpp"
 
-// #include"System.h"
+#include "dm_vo_node.hpp"
+// #include "dm_algo_g2o.h"
+
+#include "System.h"
 
 int main(int argc, char **argv)
 {
-    // if(argc < 3)
-    // {
-    //     std::cerr << "\nUsage: ros2 run orbslam rgbd path_to_vocabulary path_to_settings" << std::endl;        
-    //     return 1;
-    // }
-
     rclcpp::init(argc, argv);
 
-    // malloc error using new.. try shared ptr
-    // Create SLAM system. It initializes all system threads and gets ready to process frames.
+    DirectMethod::System DirectMethodVO(argv[1]);
 
-    // bool visualization = true;
-    // ORB_SLAM2::System SLAM(argv[1], argv[2], ORB_SLAM2::System::RGBD, visualization);
-
-    auto node = std::make_shared<RgbdSlamNode>(&SLAM);
+    auto node = std::make_shared<DirectMethodDemoNode>(&DirectMethodVO);
     rclcpp::spin(node);
 
     rclcpp::shutdown();
 
     return 0;
 }
-
-
 
 /*
 
@@ -53,7 +43,7 @@ int main(int argc, char **argv)
 
     if(argc != 3)
     {
-        cerr << endl << "Usage: ros2 run orbslam rgbd path_to_vocabulary path_to_settings" << endl;        
+        cerr << endl << "Usage: ros2 run orbslam rgbd path_to_vocabulary path_to_settings" << endl;
         rclcpp::shutdown();
         return 1;
     }
@@ -92,7 +82,7 @@ int main(int argc, char **argv)
 
 void ImageGrabber::GrabRGBD(const ImageMsg::SharedPtr msgRGB, const ImageMsg::SharedPtr msgD)
 {
-    
+
     // Copy the ros rgb image message to cv::Mat.
     cv_bridge::CvImageConstPtr cv_ptrRGB;
     try
@@ -116,10 +106,10 @@ void ImageGrabber::GrabRGBD(const ImageMsg::SharedPtr msgRGB, const ImageMsg::Sh
         RCLCPP_ERROR(g_node->get_logger(), "cv_bridge exception: %s", e.what());
         return;
     }
-    
+
 
     mpSLAM->TrackRGBD(cv_ptrRGB->image, cv_ptrD->image, msgRGB->header.stamp.sec);
-    
+
 }
 
 */
